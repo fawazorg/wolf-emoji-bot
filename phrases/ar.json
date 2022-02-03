@@ -1,0 +1,132 @@
+[
+  {
+    "name": "emoji_command_default",
+    "value": "!تكوين"
+  },
+  {
+    "name": "emoji_command_help",
+    "value": "مساعدة"
+  },
+  {
+    "name": "emoji_command_join",
+    "value": "انضم"
+  },
+  {
+    "name": "emoji_command_next",
+    "value": "التالي"
+  },
+  {
+    "name": "emoji_command_auto",
+    "value": "تلقائي"
+  },
+  {
+    "name": "emoji_command_status",
+    "value": "حاله"
+  },
+  {
+    "name": "emoji_command_score",
+    "value": "مجموع"
+  },
+  {
+    "name": "emoji_command_gscore",
+    "value": "شامل"
+  },
+  {
+    "name": "emoji_command_admin_default",
+    "value": "مدير"
+  },
+  {
+    "name": "emoji_command_admin_add",
+    "value": "اضافة"
+  },
+  {
+    "name": "emoji_command_admin_delete",
+    "value": "حذف"
+  },
+  {
+    "name": "emoji_command_admin_help",
+    "value": "مساعدة"
+  },
+  {
+    "name": "emoji_command_admin_status",
+    "value": "احصائيات"
+  },
+  {
+    "name": "emoji_message_help",
+    "value": [
+      "مرحبا بك في بوت تكوين\n",
+      "!تكوين - لبدء لعبة جديدة",
+      "!تكوين التالي - لبدء لعبة أخرى",
+      "!تكوين تلقائي - لتفعيل الوضع التلقائي في الغرفة",
+      "!تكوين حالة - لعرض اعدادات الغرفة",
+      "!تكوين مجموع - لعرض مجموعك في البوت",
+      "!تكوين شامل - لعرض المتصدرين في البوت",
+      "!تكوين مساعدة - لعرض هذه القائمة"
+    ]
+  },
+  {
+    "name": "emoji_message_help_admin",
+    "value": [
+      "مرحبا بك في قائمة الادارة\n",
+      "!تكوين مدير اضافة <الكلمة> - لاضافة لعبة",
+      "!تكوين مدير حذف <الكلمة> - لحذف لعبة محددة",
+      "!تكوين مدير احصائيات - لعرض عدد الالعاب المضافة",
+      "!تكوين مدير مساعدة - لعرض هذه القائمة"
+    ]
+  },
+  {
+    "name": "emoji_message_game",
+    "value": "/me كوُن الكلمة الصحيحة بأستخدام الايقونات\n\nالتلميح : {hint}"
+  },
+  {
+    "name": "emoji_message_answer",
+    "value": "/me احسنت {nickname} ( {id} )\n\nالجواب الصحيح كان : {answer}"
+  },
+  {
+    "name": "emoji_message_score",
+    "value": "/me ترتيبك و مجموعك الكلي على مستوى ولف:\n\nالترتيب: {rank}\nالمجموع: {total} نقطة\n{nickname} ( {id} )"
+  },
+  {
+    "name": "emoji_message_g_score",
+    "value": "/me قائمة المتصدرين حاليا في ولف لهذا البوت : \n\n{list}"
+  },
+  {
+    "name": "emoji_message_add_admin",
+    "value": "(y) تمت اضافة الكلمة بنجاح : {answer}"
+  },
+  {
+    "name": "emoji_message_delete_admin",
+    "value": "(y) تم حذف الكلمة بنجاح : {answer}"
+  },
+  {
+    "name": "emoji_message_status_admin",
+    "value": "/me عدد الكلمات المضافة في البوت : {total} كلمة"
+  },
+  {
+    "name": "emoji_message_auto",
+    "value": [
+      "الاعدادات الحالية: \n-الوضع التلقائي: مفعل",
+      "الاعدادات الحالية: \n-الوضع التلقائي: معطل",
+      "(y) الوضع التلقائي أصبح مفعل",
+      "(y) الوضع التلقائي أصبح معطل"
+    ]
+  },
+  {
+    "name": "emoji_error_admin",
+    "value": [
+      "(n) لا يمكنك استخدام هذا الامر في هذه الغرفة",
+      "(n) هذا الامر متاح للاستخدام من قبل مود و اعلى",
+      "(n) هذا الامر متاح للاستخدام من قبل ادمن و اعلى",
+      "(n) حدث خطأ ما أثناء اضافة الكلمة",
+      "(n) الكلمة مضافة من قبل",
+      "(n) فضلا ادخل كلمة حروفها بين 2 و 10",
+      "(n) الكلمة لا يمكن تحويلها الى ايقونات",
+      "(n) الكلمة غير موجودة",
+      "(n) حدث خطأ ما أثناء حذف الكلمة"
+    ]
+  },
+  {
+    "name": "emoji_error_join",
+    "value": []
+  }
+]
