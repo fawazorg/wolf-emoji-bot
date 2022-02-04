@@ -191,7 +191,17 @@ const totalScore = async (command, api) => {
             })
         );
       } else {
-        await api.messaging().sendMessage(command, "ليس لديك نقاط في البوت.");
+        let user = await api.subscriber().getById(command.sourceSubscriberId);
+        return await api.messaging().sendMessage(
+          command,
+          api
+            .utility()
+            .string()
+            .replace(api.phrase().getByCommandAndName(command, "emoji_message_no_score"), {
+              nickname: user.nickname,
+              id: user.id,
+            })
+        );
       }
     }
   );

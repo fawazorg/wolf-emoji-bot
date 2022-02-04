@@ -87,6 +87,10 @@
     "value": "/me ترتيبك و مجموعك الكلي على مستوى ولف:\n\nالترتيب: {rank}\nالمجموع: {total} نقطة\n{nickname} ( {id} )"
   },
   {
+    "name": "emoji_message_no_score",
+    "value": "/me ليس لديك نقاط حاليا في هذا البوت\n{nickname} ( {id} )"
+  },
+  {
     "name": "emoji_message_g_score",
     "value": "/me قائمة المتصدرين حاليا في ولف لهذا البوت : \n\n{list}"
   },
