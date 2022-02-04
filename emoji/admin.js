@@ -1,4 +1,4 @@
-const Game = require("./modle/game");
+const Game = require("./model/game");
 const { TTE } = require("./utility");
 /**
  *

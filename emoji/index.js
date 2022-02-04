@@ -1,7 +1,7 @@
 const cache = require("./cache");
-const Player = require("./modle/player");
-const Game = require("./modle/game");
-const Group = require("./modle/group");
+const Player = require("./model/player");
+const Game = require("./model/game");
+const Group = require("./model/group");
 const { TTE } = require("./utility");
 /**
  *
