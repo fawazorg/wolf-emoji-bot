@@ -1,5 +1,7 @@
 const Game = require("./model/game");
 const { TTE } = require("./utility");
+const chach = require("./cache");
+const { Validator } = require("wolf.js");
 /**
  *
  * @param {import("wolf.js").WOLFBot} api
@@ -89,7 +91,35 @@ const totalAnswer = async (api, command) => {
  * @param {import("wolf.js").WOLFBot} api
  * @param {import("wolf.js").CommandObject} command
  */
+const Solve = async (api, command) => {
+  if (!Validator.isValidNumber(command.argument)) {
+    return await api.messaging().sendMessage(command, getError(api, command)[9]);
+  }
+  if (chach.group.has(parseInt(api.utility().number().toEnglishNumbers(command.argument)))) {
+    let g = chach.group.get(parseInt(api.utility().number().toEnglishNumbers(command.argument)));
+    return await api.messaging().sendMessage(
+      command,
+      api
+        .utility()
+        .string()
+        .replace(api.phrase().getByCommandAndName(command, "emoji_message_solve_admin"), {
+          answer: g.answer,
+        })
+    );
+  }
+  return await api
+    .messaging()
+    .sendMessage(
+      command,
+      api.phrase().getByCommandAndName(command, "emoji_message_no_solve_admin")
+    );
+};
+/**
+ *
+ * @param {import("wolf.js").WOLFBot} api
+ * @param {import("wolf.js").CommandObject} command
+ */
 const getError = (api, command) => {
   return api.phrase().getByCommandAndName(command, "emoji_error_admin");
 };
-module.exports = { addAnswer, delAnswer, totalAnswer };
+module.exports = { addAnswer, delAnswer, totalAnswer, Solve };
