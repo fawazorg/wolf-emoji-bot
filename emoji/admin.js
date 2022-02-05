@@ -17,7 +17,12 @@ const addAnswer = async (api, command) => {
     newGame.save(async (err, data) => {
       if (err) {
         if (err.code === 11000) {
-          return await api.messaging().sendMessage(command, getError(api, command)[4]);
+          return await api.messaging().sendMessage(
+            command,
+            api.utility().string().replace(getError(api, command)[4], {
+              answer: command.argument,
+            })
+          );
         }
         return await api.messaging().sendMessage(command, getError(api, command)[3]);
       } else {
