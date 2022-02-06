@@ -89,19 +89,19 @@
   },
   {
     "name": "emoji_message_answer",
-    "value": "/me احسنت {nickname} ( {id} )\n\nالجواب الصحيح كان : {answer}"
+    "value": "احسنت {nickname} ( {id} )\n\nالجواب الصحيح كان : {answer}"
   },
   {
     "name": "emoji_message_score",
-    "value": "/me ترتيبك و مجموعك الكلي على مستوى ولف:\n\nالترتيب: {rank}\nالمجموع: {total} نقطة\n{nickname} ( {id} )"
+    "value": "ترتيبك و مجموعك الكلي على مستوى ولف:\n\nالترتيب: {rank}\nالمجموع: {total} نقطة\n{nickname} ( {id} )"
   },
   {
     "name": "emoji_message_no_score",
-    "value": "/me ليس لديك نقاط حاليا في هذا البوت\n{nickname} ( {id} )"
+    "value": "ليس لديك نقاط حاليا في هذا البوت\n{nickname} ( {id} )"
   },
   {
     "name": "emoji_message_g_score",
-    "value": "/me قائمة المتصدرين حاليا في ولف لهذا البوت : \n\n{list}"
+    "value": "قائمة المتصدرين حاليا في ولف لهذا البوت : \n\n{list}"
   },
   {
     "name": "emoji_message_add_admin",
