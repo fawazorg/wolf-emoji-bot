@@ -89,7 +89,7 @@
   },
   {
     "name": "emoji_message_answer",
-    "value": "احسنت {nickname} ( {id} )\n\nالجواب الصحيح كان : {answer}"
+    "value": "احسنت {nickname} ( {id} )\n\n(y) الجواب الصحيح كان : {answer}"
   },
   {
     "name": "emoji_message_score",
