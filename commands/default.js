@@ -10,5 +10,5 @@ Default = async (api, command) => {
 };
 
 module.exports = new Command(COMMAND_TRIGER, {
-  group: (command) => Default(api, command),
+  both: (command) => Default(api, command),
 });
