@@ -1,3 +1,4 @@
+const { Validator } = require("wolf.js");
 const cache = require("./cache");
 const Player = require("./model/player");
 const Game = require("./model/game");
@@ -225,12 +226,16 @@ const top10Player = async (command, api) => {
           const user = data[index];
           const sub = await api.subscriber().getById(user.id);
           if (index === data.length - 1) {
-            r += `${index + 1} ـ ${sub.nickname} ( ${sub.id} ) ـ  ${user.score}`;
+            r += `${index + 1} ـ ${_formatNickname(api, sub.nickname)} ( ${sub.id} ) ـ  ${
+              user.score
+            }`;
           } else {
-            r += `${index + 1} ـ ${sub.nickname} ( ${sub.id} ) ـ  ${user.score}\n`;
+            r += `${index + 1} ـ ${_formatNickname(api, sub.nickname)} ( ${sub.id} ) ـ  ${
+              user.score
+            }\n`;
           }
         }
-        return api.messaging().sendMessage(
+        return await api.messaging().sendMessage(
           command,
           api
             .utility()
@@ -258,5 +263,17 @@ const _sendGame = async (command, api, hint) => {
         hint,
       })
   );
+};
+/**
+ *
+ * @param {import("wolf.js").WOLFBot} api
+ * @param {String} nickname
+ * @returns
+ */
+const _formatNickname = (api, nickname) => {
+  if (Validator.isNullOrWhitespace(nickname)) {
+    return nickname;
+  }
+  return api.utility().string().trimAds(nickname);
 };
 module.exports = { createGame, addPoint, Auto, toggleAuto, totalScore, AutoStatus, top10Player };
