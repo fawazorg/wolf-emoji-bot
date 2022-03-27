@@ -274,7 +274,7 @@ const _formatNickname = (api, nickname) => {
   if (Validator.isNullOrWhitespace(nickname)) {
     return nickname;
   }
-  nickname = api.utility().string().trimAds(nickname);
+  //nickname = api.utility().string().trimAds(nickname);
   nickname = _trimUrl(api, nickname);
   return nickname;
 };
