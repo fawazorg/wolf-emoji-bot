@@ -274,6 +274,29 @@ const _formatNickname = (api, nickname) => {
   if (Validator.isNullOrWhitespace(nickname)) {
     return nickname;
   }
-  return api.utility().string().trimAds(nickname);
+  nickname = api.utility().string().trimAds(nickname);
+  nickname = _trimUrl(api, nickname);
+  return nickname;
+};
+
+/**
+ *
+ * @param {import("wolf.js".WOLFBot)} api
+ * @param {String} nickname
+ * @returns
+ */
+const _trimUrl = (api, nickname) => {
+  if (Validator.isNullOrWhitespace(nickname)) {
+    return nickname;
+  }
+  nickname.split(" ").forEach((s) => {
+    if (!Validator.isNullOrWhitespace(s)) {
+      let url = api.utility().string().getValidUrl(s);
+      if (url) {
+        nickname = nickname.replace(url.url, "");
+      }
+    }
+  });
+  return nickname;
 };
 module.exports = { createGame, addPoint, Auto, toggleAuto, totalScore, AutoStatus, top10Player };
