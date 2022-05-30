@@ -2,7 +2,7 @@ const { Command, Constants } = require("wolf.js");
 const { api } = require("../../bot");
 const { Solve } = require("../../emoji/admin");
 
-const COMMAND_TRIGER = `${api.config.keyword}_command_admin_solve`;
+const COMMAND_TRIGGER = `${api.config.keyword}_command_admin_solve`;
 
 AdminSolve = async (api, command) => {
   const err = api.phrase().getByCommandAndName(command, "emoji_error_admin");
@@ -25,6 +25,6 @@ AdminSolve = async (api, command) => {
   return await Solve(api, command);
 };
 
-module.exports = new Command(COMMAND_TRIGER, {
+module.exports = new Command(COMMAND_TRIGGER, {
   group: (command) => AdminSolve(api, command),
 });

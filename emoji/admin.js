@@ -1,6 +1,6 @@
 const Game = require("./model/game");
 const { TTE } = require("./utility");
-const chach = require("./cache");
+const cache = require("./cache");
 const { Validator } = require("wolf.js");
 /**
  *
@@ -100,8 +100,8 @@ const Solve = async (api, command) => {
   if (!Validator.isValidNumber(command.argument)) {
     return await api.messaging().sendMessage(command, getError(api, command)[9]);
   }
-  if (chach.group.has(parseInt(api.utility().number().toEnglishNumbers(command.argument)))) {
-    let g = chach.group.get(parseInt(api.utility().number().toEnglishNumbers(command.argument)));
+  if (cache.group.has(parseInt(api.utility().number().toEnglishNumbers(command.argument)))) {
+    let g = cache.group.get(parseInt(api.utility().number().toEnglishNumbers(command.argument)));
     return await api.messaging().sendMessage(
       command,
       api

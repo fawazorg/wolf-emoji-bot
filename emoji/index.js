@@ -4,6 +4,7 @@ const Player = require("./model/player");
 const Game = require("./model/game");
 const Group = require("./model/group");
 const { TTE } = require("./utility");
+const { setLastActive } = require("./active");
 /**
  *
  * @param {import('wolf.js').CommandObject} command
@@ -30,6 +31,7 @@ const createGame = async (command, api, next = false) => {
         answer: data.answer,
         language: command.language,
       });
+      await setLastActive(command.targetGroupId);
       return await _sendGame(command, api, hint);
     }
     return;
@@ -165,7 +167,7 @@ const totalScore = async (command, api) => {
         $setWindowFields: {
           sortBy: { score: -1 },
           output: {
-            GlopalRank: {
+            GlobalRank: {
               $documentNumber: {},
             },
           },
@@ -185,7 +187,7 @@ const totalScore = async (command, api) => {
             .utility()
             .string()
             .replace(api.phrase().getByCommandAndName(command, "emoji_message_score"), {
-              rank: data.GlopalRank,
+              rank: data.GlobalRank,
               total: data.score,
               nickname: user.nickname,
               id: user.id,

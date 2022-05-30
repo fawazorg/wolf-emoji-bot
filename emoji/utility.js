@@ -6,17 +6,17 @@ const random = (arr) => {
 
 const TTE = (s) => {
   let emojis = "";
-  let complate = true;
+  let complete = true;
   for (let index = 0; index < s.length; index++) {
     const element = s.charAt(index);
     const EArray = char.find((a) => a.char === element);
     if (!EArray) {
-      complate = false;
+      complete = false;
       continue;
     }
     emojis += random(EArray.emote);
   }
-  if (complate) {
+  if (complete) {
     return emojis;
   }
   return false;

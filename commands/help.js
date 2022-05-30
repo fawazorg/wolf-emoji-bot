@@ -1,7 +1,7 @@
 const { Command } = require("wolf.js");
 const { api } = require("../bot");
 
-const COMMAND_TRIGER = `${api.config.keyword}_command_help`;
+const COMMAND_TRIGGER = `${api.config.keyword}_command_help`;
 const COMMAND_RESPONSE = `${api.config.keyword}_message_help`;
 
 Help = async (api, command) => {
@@ -13,6 +13,6 @@ Help = async (api, command) => {
     );
 };
 
-module.exports = new Command(COMMAND_TRIGER, {
+module.exports = new Command(COMMAND_TRIGGER, {
   both: (command) => Help(api, command),
 });
