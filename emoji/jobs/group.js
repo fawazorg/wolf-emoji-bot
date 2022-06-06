@@ -38,8 +38,7 @@ const leaveInactiveGroups = async (api, days) => {
  * @param {import ("wolf.js").GroupObject} group
  */
 const sendLeaveMessage = async (api, group) => {
-  let language = group.language === "ar" ? "ar" : "en";
-  let phrase = api.phrase().getByLanguageAndName(language, "emoji_auto_leave_message");
+  let phrase = api.phrase().getByLanguageAndName("ar", "emoji_auto_leave_message");
   await api.messaging().sendGroupMessage(group.id, phrase);
 };
 /**
