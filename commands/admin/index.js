@@ -6,8 +6,9 @@ const Solve = require("./solve");
 const Default = require("./default");
 const Count = require("./count");
 const Refresh = require("./refresh");
+const ContactAdd = require("./contactAdd");
+const Commands = [Add, Delete, Solve, Help, Status, Refresh, ContactAdd, Count];
 
-const Commands = [Add, Delete, Solve, Help, Status, Refresh, Count];
 Default.children = Commands;
 
 module.exports = Default;

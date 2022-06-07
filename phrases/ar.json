@@ -48,6 +48,10 @@
     "value": "تحديث"
   },
   {
+    "name": "emoji_admin_contact_add_command",
+    "value": "اضفني"
+  },
+  {
     "name": "emoji_admin_count_command",
     "value": "مجموع"
   },
@@ -179,6 +183,10 @@
   {
     "name": "emoji_admin_count_message",
     "value": "/me عدد الغرف المتواجد بها حاليا : {count} غرفة."
+  },
+  {
+    "name": "emoji_admin_contact_add_message",
+    "value": "/me تمت اضافتك على جهات اتصالي، تقدر الحين ترسلي خاص."
   },
   {
     "name": "emoji_admin_join_log",
