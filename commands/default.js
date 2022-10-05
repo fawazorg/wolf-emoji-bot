@@ -5,6 +5,9 @@ const { createGame } = require("../emoji");
 const COMMAND_TRIGGER = `${api.config.keyword}_command_default`;
 
 Default = async (api, command) => {
+  if (!command.isGroup) {
+    return;
+  }
   return await createGame(command, api);
 };
 
