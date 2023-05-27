@@ -8,8 +8,10 @@ const api = new WOLFBot();
 require("dotenv").config();
 
 mongoose.connect(
-  `mongodb://${process.env.MONGO_USER}:${process.env.MONGO_PWD}@127.0.0.1:27020/${process.env.MONGO_DB_NAME}`,
+  `mongodb://127.0.0.1:27017/${process.env.MONGO_DB_NAME}`,
   {
+    user:process.env.MONGO_USER,
+    pass:process.env.MONGO_PWD,
     useNewUrlParser: true,
     useUnifiedTopology: true,
   }
