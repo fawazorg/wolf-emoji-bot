@@ -1,16 +1,21 @@
-const { Command } = require("wolf.js");
-const { api } = require("../bot");
-const { createGame } = require("../emoji");
+import { Command } from 'wolf.js';
+import client from '../bot.js';
+import { createGame } from '../emoji/index.js';
 
-const COMMAND_TRIGGER = `${api.config.keyword}_command_default`;
-
-Default = async (api, command) => {
+/**
+ * default command to create game
+ * @param {import('wolf.js').WOLF} client
+ * @param {import('wolf.js').CommandContext} command
+ * @returns {Promise<void | any>}
+ */
+const Default = async (client, command) => {
   if (!command.isGroup) {
-    return;
+    return Promise.resolve();
   }
-  return await createGame(command, api);
+
+  return await createGame(client, command);
 };
 
-module.exports = new Command(COMMAND_TRIGGER, {
-  both: (command) => Default(api, command),
-});
+export default new Command('command_default', {
+  both: (command) => Default(client, command)
+}, []);

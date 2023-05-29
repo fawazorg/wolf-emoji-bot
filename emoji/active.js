@@ -1,26 +1,25 @@
-const Group = require("./model/group");
+import Group from './model/group.js';
 
 const setLastActive = async (id) => {
   await Group.findOneAndUpdate({ id }, { lastActiveAt: new Date() }, { upsert: true });
 };
 
 const getInactiveGroups = async (daysPass) => {
-  let groups = await Group.aggregate([
+  return Group.aggregate([
     {
       $project: {
-        id: "$id",
+        id: '$id',
         days: {
           $dateDiff: {
-            startDate: "$lastActiveAt",
-            endDate: "$$NOW",
-            unit: "day",
-          },
-        },
-      },
+            startDate: '$lastActiveAt',
+            endDate: '$$NOW',
+            unit: 'day'
+          }
+        }
+      }
     },
-    { $match: { days: { $gt: daysPass } } },
+    { $match: { days: { $gt: daysPass } } }
   ]);
-  return groups;
 };
 
 const deleteGroup = async (id) => {
@@ -29,15 +28,18 @@ const deleteGroup = async (id) => {
 
 /**
  *
- * @param {import ("wolf.js").WOLFBot} api
+ * @param {import('wolf.js').WOLF} client
  */
-const refreshUnsetGroup = async (api) => {
-  let groups = await api.group().list();
-  let groupsNames = groups.reduce(async (pv, group) => {
-    let names = await pv;
+const refreshUnsetGroup = async (client) => {
+  const groups = await client.group.list();
+
+  return groups.reduce(async (pv, group) => {
+    const names = await pv;
+
     await setLastActive(group.id);
+
     return [...names, `[${group.name}]`];
   }, []);
-  return groupsNames;
 };
-module.exports = { setLastActive, getInactiveGroups, refreshUnsetGroup, deleteGroup };
+
+export { setLastActive, getInactiveGroups, refreshUnsetGroup, deleteGroup };

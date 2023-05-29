@@ -3,12 +3,12 @@ import client from '../../bot.js';
 import { admins } from '../../emoji/data.js';
 
 /**
- * group count
+ * contact add
  * @param {import('wolf.js').WOLF} client
  * @param {import('wolf.js').CommandContext} command
  * @returns {Promise<Response<MessageResponse>|Response<Array<MessageResponse>>>}
  */
-const Count = async (client, command) => {
+const AddContact = async (client, command) => {
   const isDeveloper = command.sourceSubscriberId === client.config.framework.developer;
   const isAdmin = admins.includes(command.sourceSubscriberId);
   const okay = isDeveloper || isAdmin;
@@ -18,14 +18,13 @@ const Count = async (client, command) => {
 
     return await client.messaging.sendMessage(command, phrase);
   }
+  await client.contact.add(command.sourceSubscriberId);
 
-  const count = (await client.group.list()).length;
-  const phrase = client.phrase.getByCommandAndName(command, 'message_admin_count');
-  const content = client.utility.string.replace(phrase, { count });
+  const phrase = client.phrase.getByCommandAndName(command, 'message_admin_add_contact');
 
-  return await client.messaging.sendMessage(command, content);
+  return await client.messaging.sendMessage(command, phrase);
 };
 
-export default new Command('command_admin_count', {
-  group: (command) => Count(client, command)
+export default new Command('command_admin_contact_add', {
+  group: (command) => AddContact(client, command)
 });

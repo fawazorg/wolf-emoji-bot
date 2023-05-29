@@ -1,10 +1,7 @@
-const mongoose = require("mongoose");
-const Schema = mongoose.Schema;
+import { Schema, model } from 'mongoose';
 
 const GameSchema = new Schema({
-  answer: { type: String, unique: true },
+  answer: { type: String, unique: true }
 });
 
-const Game = mongoose.model("Game", GameSchema);
-
-module.exports = Game;
+export default model('Game', GameSchema);

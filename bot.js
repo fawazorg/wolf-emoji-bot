@@ -1,46 +1,49 @@
-const schedule = require("node-schedule");
-const mongoose = require("mongoose");
-const { WOLFBot } = require("wolf.js");
-const messageHandler = require("./emoji/solver");
-const { leaveInactiveGroups } = require("./emoji/jobs/group");
-const { setLastActive, deleteGroup } = require("./emoji/active");
-const api = new WOLFBot();
-require("dotenv").config();
+import { scheduleJob } from 'node-schedule';
+import mongoose from 'mongoose';
+import { OnlineState, WOLF } from 'wolf.js';
+import messageHandler from './emoji/solver.js';
+import { leaveInactiveGroups } from './emoji/jobs/group.js';
+import { setLastActive, deleteGroup } from './emoji/active.js';
+import dotenv from 'dotenv';
+dotenv.config();
 
+const client = new WOLF();
+
+mongoose.set({ strictQuery: false });
 mongoose.connect(
   `mongodb://127.0.0.1:27017/${process.env.MONGO_DB_NAME}`,
   {
-    user:process.env.MONGO_USER,
-    pass:process.env.MONGO_PWD,
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
+    user: process.env.MONGO_USER,
+    pass: process.env.MONGO_PWD
   }
-);
+).then();
 
 mongoose.Promise = global.Promise;
+
 const db = mongoose.connection;
 
-module.exports = { api };
+export default client;
 
-db.on("error", console.error.bind(console, "connection error:"));
-db.once("open", () => {
-  console.log("[*] Database is a live!");
+db.on('error', console.error.bind(console, 'connection error:'));
+db.once('open', () => {
+  console.log('[*] Database is a live!');
 });
 
-api.on("ready", async () => {
-  console.log(`[*] - ${api.config.keyword} start.`);
-  schedule.scheduleJob("0 * * * *", async () => await leaveInactiveGroups(api, 5));
+client.on('ready', async () => {
+  console.log(`[*] - ${client.config.keyword} start.`);
+  scheduleJob('0 * * * *', async () => await leaveInactiveGroups(client, 5));
 });
 
-api.on("groupMessage", async (message) => {
-  await messageHandler(message, api);
+client.on('groupMessage', async (message) => {
+  await messageHandler(client, message);
 });
 
-api.on("joinedGroup", async (group) => {
+client.on('joinedGroup', async (group) => {
   await setLastActive(group.id);
 });
 
-api.on("leftGroup", async (group) => {
+client.on('leftGroup', async (group) => {
   await deleteGroup(group.id);
 });
-api.login(process.env.EMAIL, process.env.PASSWORD);
+
+client.login(process.env.EMAIL, process.env.PASSWORD, OnlineState.ONLINE).then().catch();

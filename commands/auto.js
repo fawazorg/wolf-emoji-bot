@@ -1,13 +1,17 @@
-const { Command } = require("wolf.js");
-const { api } = require("../bot");
-const { toggleAuto } = require("../emoji");
+import { Command } from 'wolf.js';
+import client from '../bot.js';
+import { toggleAuto } from '../emoji/index.js';
 
-const COMMAND_TRIGGER = `${api.config.keyword}_command_auto`;
-
-Auto = async (api, command) => {
-  await toggleAuto(command, api);
+/**
+ * auto command
+ * @param {import('wolf.js').WOLF} client
+ * @param {import('wolf.js').CommandContext} command
+ * @returns {Promise<void>}
+ */
+const Auto = async (client, command) => {
+  await toggleAuto(client, command);
 };
 
-module.exports = new Command(COMMAND_TRIGGER, {
-  group: (command) => Auto(api, command),
+export default new Command('command_auto', {
+  group: (command) => Auto(client, command)
 });

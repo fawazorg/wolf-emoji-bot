@@ -1,13 +1,17 @@
-const { Command } = require("wolf.js");
-const { api } = require("../bot");
-const { totalScore } = require("../emoji");
+import { Command } from 'wolf.js';
+import client from '../bot.js';
+import { totalScore } from '../emoji/index.js';
 
-const COMMAND_TRIGGER = `${api.config.keyword}_command_score`;
-
-Score = async (api, command) => {
-  await totalScore(command, api);
+/**
+ * score command
+ * @param {import('wolf.js').WOLF} client
+ * @param {import('wolf.js').CommandContext} command
+ * @returns {Promise<void>}
+ */
+const Score = async (client, command) => {
+  return await totalScore(client, command);
 };
 
-module.exports = new Command(COMMAND_TRIGGER, {
-  group: (command) => Score(api, command),
+export default new Command('command_score', {
+  group: (command) => Score(client, command)
 });

@@ -1,14 +1,15 @@
 import { Command, Capability } from 'wolf.js';
 import client from '../../bot.js';
-import { delAnswer } from '../../emoji/admin.js';
+import { totalAnswer } from '../../emoji/admin.js';
 
 /**
- * delete word form db
+ * status admin command
  * @param {import('wolf.js').WOLF} client
  * @param {import('wolf.js').CommandContext} command
- * @returns {Promise<Response<MessageResponse>|Response<Array<MessageResponse>>|*|undefined>}
+ * @returns {Promise<Response<MessageResponse>|Response<Array<MessageResponse>>|void>}
+ * @constructor
  */
-const DeleteAdmin = async (client, command) => {
+const AdminStats = async (client, command) => {
   const err = client.phrase.getByCommandAndName(command, 'error_admin');
 
   if (command.targetGroupId !== parseInt(process.env.ROOM_ADMIN_ID)) {
@@ -24,16 +25,16 @@ const DeleteAdmin = async (client, command) => {
       command.sourceSubscriberId,
       Capability.MOD,
       true,
-      true
+      false
     );
 
   if (!okay) {
     return await client.messaging.sendMessage(command, err[1]);
   }
 
-  return await delAnswer(client, command);
+  return await totalAnswer(client, command);
 };
 
-export default new Command('command_admin_delete', {
-  group: (command) => DeleteAdmin(client, command)
+export default new Command('command_admin_stats', {
+  group: (command) => AdminStats(client, command)
 });

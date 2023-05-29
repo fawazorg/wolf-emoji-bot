@@ -1,78 +1,74 @@
 [
   {
-    "name": "emoji_command_default",
+    "name": "command_default",
     "value": "!تكوين"
   },
   {
-    "name": "emoji_command_help",
+    "name": "command_help",
     "value": "مساعدة"
   },
   {
-    "name": "emoji_command_join",
+    "name": "command_join",
     "value": "انضم"
   },
   {
-    "name": "emoji_command_next",
+    "name": "command_next",
     "value": "التالي"
   },
   {
-    "name": "emoji_command_auto",
+    "name": "command_auto",
     "value": "تلقائي"
   },
   {
-    "name": "emoji_command_status",
+    "name": "command_status",
     "value": "حاله"
   },
   {
-    "name": "emoji_command_score",
+    "name": "command_score",
     "value": "مجموع"
   },
   {
-    "name": "emoji_command_gscore",
+    "name": "command_global_score",
     "value": "شامل"
   },
   {
-    "name": "emoji_command_admin_default",
+    "name": "command_admin_default",
     "value": "مدير"
   },
   {
-    "name": "emoji_command_admin_default",
-    "value": "م"
-  },
-  {
-    "name": "emoji_command_admin_add",
+    "name": "command_admin_add",
     "value": "اضافة"
   },
   {
-    "name": "emoji_admin_refresh_command",
+    "name": "command_admin_refresh",
     "value": "تحديث"
   },
   {
-    "name": "emoji_admin_contact_add_command",
+    "name": "command_admin_contact_add",
     "value": "اضفني"
   },
   {
-    "name": "emoji_admin_count_command",
+    "name": "command_admin_count",
     "value": "مجموع"
   },
   {
-    "name": "emoji_command_admin_delete",
+    "name": "command_admin_delete",
     "value": "حذف"
   },
   {
-    "name": "emoji_command_admin_help",
+    "name": "command_admin_help",
     "value": "مساعدة"
   },
   {
-    "name": "emoji_command_admin_status",
+    "name": "command_admin_stats",
     "value": "احصائيات"
   },
   {
-    "name": "emoji_command_admin_solve",
+    "name": "command_admin_solve",
     "value": "حل"
   },
   {
-    "name": "emoji_message_help",
+    "name": "message_help",
     "value": [
       "مرحبا بك في بوت تكوين\n",
       "!تكوين - لبدء لعبة جديدة",
@@ -85,7 +81,7 @@
     ]
   },
   {
-    "name": "emoji_message_help_admin",
+    "name": "message_help_admin",
     "value": [
       "مرحبا بك في قائمة الادارة\n",
       "!تكوين مدير اضافة <الكلمة> - لاضافة لعبة",
@@ -97,47 +93,47 @@
     ]
   },
   {
-    "name": "emoji_message_game",
+    "name": "message_game_start",
     "value": "/me كوّن الكلمة الصحيحة باستخدام الايقونات\n\nالتلميح : {hint}"
   },
   {
-    "name": "emoji_message_answer",
-    "value": "احسنت {nickname} ( {id} )\n\n(y) الجواب الصحيح كان : {answer}"
+    "name": "message_game_answer",
+    "value": "أحسنت!\nالجواب الصحيح هو \" {answer} \" واستغرق حل اللعبة 10 ثواني\n{nickname} ({id} )"
   },
   {
-    "name": "emoji_message_score",
+    "name": "message_score",
     "value": "ترتيبك و مجموعك الكلي على مستوى ولف:\n\nالترتيب: {rank}\nالمجموع: {total} نقطة\n{nickname} ( {id} )"
   },
   {
-    "name": "emoji_message_no_score",
+    "name": "message_no_score",
     "value": "ليس لديك نقاط حاليا في هذا البوت\n{nickname} ( {id} )"
   },
   {
-    "name": "emoji_message_g_score",
+    "name": "message_global_score",
     "value": "قائمة المتصدرين حاليا في ولف لهذا البوت : \n\n{list}"
   },
   {
-    "name": "emoji_message_add_admin",
+    "name": "message_admin_add",
     "value": "(y) تمت اضافة الكلمة بنجاح : {answer}"
   },
   {
-    "name": "emoji_message_delete_admin",
+    "name": "message_admin_delete",
     "value": "(y) تم حذف الكلمة بنجاح : {answer}"
   },
   {
-    "name": "emoji_message_solve_admin",
+    "name": "message_admin_solve",
     "value": "/me اجابة الغرفة هي : {answer}"
   },
   {
-    "name": "emoji_message_no_solve_admin",
+    "name": "message_admin_game_not_exist",
     "value": "/me لا توجد لعبة في هذه الغرفة."
   },
   {
-    "name": "emoji_message_status_admin",
+    "name": "message_admin_stats",
     "value": "/me عدد الكلمات المضافة في البوت : {total} كلمة"
   },
   {
-    "name": "emoji_message_auto",
+    "name": "message_auto",
     "value": [
       "الاعدادات الحالية: \n-الوضع التلقائي: مفعل",
       "الاعدادات الحالية: \n-الوضع التلقائي: معطل",
@@ -146,13 +142,13 @@
     ]
   },
   {
-    "name": "emoji_error_admin",
+    "name": "error_admin",
     "value": [
       "(n) لا يمكنك استخدام هذا الامر في هذه الغرفة",
       "(n) هذا الامر متاح للاستخدام من قبل مود و اعلى",
       "(n) هذا الامر متاح للاستخدام من قبل ادمن و اعلى",
       "(n) حدث خطأ ما أثناء اضافة الكلمة",
-      "(n) الكلمة \" {answer} \"  مضافة من قبل",
+      "(n) الكلمة \" {answer} \" مضافة من قبل",
       "(n) فضلا ادخل كلمة حروفها بين 2 و 10",
       "(n) الكلمة لا يمكن تحويلها الى ايقونات",
       "(n) الكلمة غير موجودة",
@@ -161,7 +157,7 @@
     ]
   },
   {
-    "name": "emoji_join_message",
+    "name": "message_join",
     "value": [
       "(y) تم الانضمام بنجاح",
       "(n) ليس لديك صلاحية لأستخدام هذا الامر",
@@ -173,31 +169,31 @@
     ]
   },
   {
-    "name": "emoji_admin_not_authorized_message",
+    "name": "message_admin_not_authorized",
     "value": "/me (n) انت لست مخولا لاستخدام هذا الامر."
   },
   {
-    "name": "emoji_auto_leave_message",
+    "name": "message_auto_leave",
     "value": "/me عذراً، لم تقومواً باللعب خلال الخمسة أيام الماضية، لذلك سوف أغادر الغرفة. :("
   },
   {
-    "name": "emoji_admin_count_message",
+    "name": "message_admin_count",
     "value": "/me عدد الغرف المتواجد بها حاليا : {count} غرفة."
   },
   {
-    "name": "emoji_admin_contact_add_message",
+    "name": "message_admin_add_contact",
     "value": "/me تمت اضافتك على جهات اتصالي، تقدر الحين ترسلي خاص."
   },
   {
-    "name": "emoji_admin_join_log",
+    "name": "message_admin_join_log",
     "value": "/alert ⚙ أمر إداري\n\n•الامر:انضمام\n•المدير : {adminNickname} ({adminID})\n•الغرفة:[{groupName}] ({groupID})"
   },
   {
-    "name": "emoji_auto_leave_log",
+    "name": "message_auto_leave_log",
     "value": "/me 📊 تقرير الصيانة:\n\nعدد الغرف المتبقي:{count}\nعدد الغرف الخاملة:{inactiveCount}\nخرجت من الغرف التالية:\n{groupsName}"
   },
   {
-    "name": "emoji_admin_refresh_message",
+    "name": "message_admin_refresh",
     "value": "/me تم تحديث الغرف التالية :\n{list}"
   }
 ]

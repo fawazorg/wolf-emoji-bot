@@ -1,3 +1,1 @@
-const group = new Map();
-
-module.exports = { group };
+export default new Map();

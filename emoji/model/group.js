@@ -1,16 +1,12 @@
-const mongoose = require("mongoose");
-const findOrCreate = require("mongoose-find-or-create");
-
-const Schema = mongoose.Schema;
+import { Schema, model } from 'mongoose';
+import findOrCreate from 'mongoose-find-or-create';
 
 const GroupSchema = new Schema({
   id: { type: Number, unique: true },
   auto: { type: Boolean, default: false },
-  lastActiveAt: { type: Date, default: new Date() },
+  lastActiveAt: { type: Date, default: new Date() }
 });
 
 GroupSchema.plugin(findOrCreate);
 
-const Group = mongoose.model("Group", GroupSchema);
-
-module.exports = Group;
+export default model('Group', GroupSchema);

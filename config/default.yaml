@@ -1,10 +1,33 @@
-keyword: emoji
-app:
-  defaultLanguage: ar
-  developerId: 12500068
-  commandSettings:
-    ignoreOfficialBots: true
-    ignoreUnofficialBots: true
-  networkSettings:
-    retryMode: 1
-    retryAttempts: 1
+keyword: emoji #single word here
+framework:
+  developer: 12500068
+  language: ar
+  join:
+    limit: 15 # the amount of groups the bot is allowed in
+    lock: 0 # 0 - everyone, 1 - group owner, 2 - authorized, 3 - developer
+    members:
+      min: 0
+      max: .inf
+  command:
+    ignore:
+      official: true # whether an official bot will trigger a command (internal)
+      unofficial: true # whether an unofficial bot will trigger a command (internal)
+      self: true  # whether the bot will process its own messages and trigger its own commands (internal)
+  message:
+    ignore:
+      self: true # whether the bot will process its own messages (internal)
+  subscriptions:
+    messages:
+      group:
+        enabled: true #subscribe to group messages  (server)
+        tipping: true # subscribe to group message tip events  (server)
+      private:
+        enabled: true # subscribe to private messages (server)
+        tipping: false  # subscribe to private message tip events  (server) - NOT IMPLEMENTED
+
+game:
+  timeout: 10000
+
+redis:
+  host: localhost
+  port: 6379

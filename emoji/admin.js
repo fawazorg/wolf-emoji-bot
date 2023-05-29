@@ -1,130 +1,146 @@
-const Game = require("./model/game");
-const { TTE } = require("./utility");
-const cache = require("./cache");
-const { Validator } = require("wolf.js");
+import { Validator } from 'wolf.js';
+import Game from './model/game.js';
+import { TTE } from './utility.js';
+import cache from './cache.js';
+
 /**
- *
- * @param {import("wolf.js").WOLFBot} api
- * @param {import("wolf.js").CommandObject} command
+ * add word to database
+ * @param {import('wolf.js').WOLF} client
+ * @param {import('wolf.js').CommandContext} command
+ * @returns {Promise<Response<MessageResponse>|Response<Array<MessageResponse>>>}
  */
-const addAnswer = async (api, command) => {
+const addAnswer = async (client, command) => {
   if (command.argument.length <= 2 || command.argument.length > 10) {
-    return await api.messaging().sendMessage(command, getError(api, command)[5]);
+    return await client.messaging.sendMessage(command, getError(client, command)[5]);
   }
+
   if (TTE(command.argument)) {
     const newGame = new Game();
+
     newGame.answer = command.argument;
     newGame.save(async (err, data) => {
       if (err) {
-        if (err.code === 11000) {
-          return await api.messaging().sendMessage(
+        if (err?.code === 11000) {
+          return await client.messaging.sendMessage(
             command,
-            api.utility().string().replace(getError(api, command)[4], {
-              answer: command.argument,
+            client.utility.string.replace(getError(client, command)[4], {
+              answer: command.argument
             })
           );
         }
-        return await api.messaging().sendMessage(command, getError(api, command)[3]);
+
+        return await client.messaging.sendMessage(command, getError(client, command)[3]);
       } else {
-        return await api.messaging().sendMessage(
+        return await client.messaging.sendMessage(
           command,
-          api
-            .utility()
-            .string()
-            .replace(api.phrase().getByCommandAndName(command, "emoji_message_add_admin"), {
-              answer: newGame.answer,
+          client
+            .utility
+            .string
+            .replace(client.phrase.getByCommandAndName(command, 'message_admin_add'), {
+              answer: newGame.answer
             })
         );
       }
     });
   } else {
-    return await api.messaging().sendMessage(command, getError(api, command)[6]);
+    return await client.messaging.sendMessage(command, getError(client, command)[6]);
   }
 };
 /**
- *
- * @param {import("wolf.js").WOLFBot} api
- * @param {import("wolf.js").CommandObject} command
+ * delete word form database
+ * @param {import('wolf.js').WOLF} client
+ * @param {import('wolf.js').CommandContext} command
+ * @return {Promise<Response<MessageResponse> | Response<Array<MessageResponse>>>}
  */
-const delAnswer = async (api, command) => {
+const delAnswer = async (client, command) => {
   if (command.argument.length <= 2 || command.argument.length > 10) {
-    return await api.messaging().sendMessage(command, getError(api, command)[5]);
+    return await client.messaging.sendMessage(command, getError(client, command)[5]);
   }
   Game.findOneAndDelete({ answer: { $eq: command.argument } }, async (err, data) => {
     if (err) {
-      return await api.messaging().sendMessage(command, getError(api, command)[8]);
+      return await client.messaging.sendMessage(command, getError(client, command)[8]);
     }
+
     if (data) {
-      return await api.messaging().sendMessage(
+      return await client.messaging.sendMessage(
         command,
-        api
-          .utility()
-          .string()
-          .replace(api.phrase().getByCommandAndName(command, "emoji_message_delete_admin"), {
-            answer: data.answer,
+        client
+          .utility
+          .string
+          .replace(client.phrase.getByCommandAndName(command, 'message_admin_delete'), {
+            answer: data.answer
           })
       );
     }
-    return await api.messaging().sendMessage(command, getError(api, command)[7]);
+
+    return await client.messaging.sendMessage(command, getError(client, command)[7]);
   });
 };
 /**
- *
- * @param {import("wolf.js").WOLFBot} api
- * @param {import("wolf.js").CommandObject} command
+ * get total words in database
+ * @param {import('wolf.js').WOLF} client
+ * @param {import('wolf.js').CommandContext} command
+ * @return {Promise<void>}
  */
-const totalAnswer = async (api, command) => {
+const totalAnswer = async (client, command) => {
   Game.count().exec(async (err, data) => {
     if (err) {
       throw err;
     }
+
     if (data) {
-      return await api.messaging().sendMessage(
+      return await client.messaging.sendMessage(
         command,
-        api
-          .utility()
-          .string()
-          .replace(api.phrase().getByCommandAndName(command, "emoji_message_status_admin"), {
-            total: data,
+        client
+          .utility
+          .string
+          .replace(client.phrase.getByCommandAndName(command, 'message_admin_stats'), {
+            total: data
           })
       );
     }
   });
 };
 /**
- *
- * @param {import("wolf.js").WOLFBot} api
- * @param {import("wolf.js").CommandObject} command
+ * solve word
+ * @param {import('wolf.js').WOLF} client
+ * @param {import('wolf.js').CommandContext} command
+ * @return {Promise<Response<MessageResponse> | Response<Array<MessageResponse>>>}
  */
-const Solve = async (api, command) => {
-  if (!Validator.isValidNumber(command.argument)) {
-    return await api.messaging().sendMessage(command, getError(api, command)[9]);
+const Solve = async (client, command) => {
+  if (!Validator.isValidNumber(command.argument, false)) {
+    return await client.messaging.sendMessage(command, getError(client, command)[9]);
   }
-  if (cache.group.has(parseInt(api.utility().number().toEnglishNumbers(command.argument)))) {
-    let g = cache.group.get(parseInt(api.utility().number().toEnglishNumbers(command.argument)));
-    return await api.messaging().sendMessage(
+
+  if (cache.has(parseInt(client.utility.number.toEnglishNumbers(command.argument)))) {
+    const g = cache.get(parseInt(client.utility.number.toEnglishNumbers(command.argument)));
+
+    return await client.messaging.sendMessage(
       command,
-      api
-        .utility()
-        .string()
-        .replace(api.phrase().getByCommandAndName(command, "emoji_message_solve_admin"), {
-          answer: g.answer,
+      client
+        .utility
+        .string
+        .replace(client.phrase.getByCommandAndName(command, 'message_admin_solve'), {
+          answer: g.answer
         })
     );
   }
-  return await api
-    .messaging()
+
+  return await client
+    .messaging
     .sendMessage(
       command,
-      api.phrase().getByCommandAndName(command, "emoji_message_no_solve_admin")
+      client.phrase.getByCommandAndName(command, 'message_admin_game_not_exist')
     );
 };
 /**
  *
- * @param {import("wolf.js").WOLFBot} api
- * @param {import("wolf.js").CommandObject} command
+ * @param {import('wolf.js').WOLF} client
+ * @param {import('wolf.js').CommandContext} command
+ * @return {string}
  */
-const getError = (api, command) => {
-  return api.phrase().getByCommandAndName(command, "emoji_error_admin");
+const getError = (client, command) => {
+  return client.phrase.getByCommandAndName(command, 'error_admin');
 };
-module.exports = { addAnswer, delAnswer, totalAnswer, Solve };
+
+export { addAnswer, delAnswer, totalAnswer, Solve };

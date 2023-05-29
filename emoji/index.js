@@ -1,70 +1,79 @@
-const { Validator } = require("wolf.js");
-const cache = require("./cache");
-const Player = require("./model/player");
-const Game = require("./model/game");
-const Group = require("./model/group");
-const { TTE } = require("./utility");
-const { setLastActive } = require("./active");
+import cache from './cache.js';
+import Player from './model/player.js';
+import Game from './model/game.js';
+import Group from './model/group.js';
+import { TTE } from './utility.js';
+import { setLastActive } from './active.js';
+
 /**
  *
- * @param {import('wolf.js').CommandObject} command
- * @param {import('wolf.js').WOLFBot} api
+ * @param {import('wolf.js').WOLF} client
+ * @param {import('wolf.js').CommandContext || import('wolf.js').Message} commandOrMessage
+ * @param {boolean} next
+ * @return {Promise<any>}
  */
-const createGame = async (command, api, next = false) => {
+const createGame = async (client, commandOrMessage, next = false) => {
   if (!next) {
-    if (cache.group.has(command.targetGroupId)) {
-      const g = cache.group.get(command.targetGroupId);
-      return await _sendGame(command, api, g.hint);
+    if (cache.has(commandOrMessage.targetGroupId)) {
+      const g = cache.get(commandOrMessage.targetGroupId);
+
+      return await _sendGame(client, commandOrMessage, g.hint);
     }
   }
-  if (cache.group.has(command.targetGroupId)) {
-    cache.group.delete(command.targetGroupId);
+
+  if (cache.has(commandOrMessage.targetGroupId)) {
+    cache.delete(commandOrMessage.targetGroupId);
   }
   Game.aggregate([{ $sample: { size: 1 } }], async (err, [data]) => {
     if (err) {
       throw err;
     }
+
     if (data) {
-      let hint = TTE(data.answer);
-      cache.group.set(command.targetGroupId, {
+      const hint = TTE(data.answer);
+
+      cache.set(commandOrMessage.targetGroupId, {
         hint,
         answer: data.answer,
-        language: command.language,
+        language: commandOrMessage.language
       });
-      await setLastActive(command.targetGroupId);
-      return await _sendGame(command, api, hint);
+      await setLastActive(commandOrMessage.targetGroupId);
+
+      return await _sendGame(client, commandOrMessage, hint);
     }
-    return;
   });
 };
 /**
- *
- * @param {import('wolf.js').MessageObject} msg
- * @param {import('wolf.js').WOLFBot} api
+ * @param {import('wolf.js').WOLF} client
+ * @param {import('wolf.js').Message} message
  * @param {String} language
+ * @return {Promise<void>}
  */
-const addPoint = async (msg, api, language) => {
-  cache.group.delete(msg.targetGroupId);
-  Player.findOrCreate({ id: msg.sourceSubscriberId }, async (err, data) => {
+const addPoint = async (client, message, language) => {
+  cache.delete(message.targetGroupId);
+  Player.findOrCreate({ id: message.sourceSubscriberId }, async (err, data) => {
     if (err) {
       throw err;
     }
+
     if (data) {
       Player.findByIdAndUpdate(data._id, { $inc: { score: 1 } }, async (err, data) => {
         if (err) {
           throw err;
         }
+
         if (data) {
-          let user = await api.subscriber().getById(msg.sourceSubscriberId);
-          return await api.messaging().sendMessage(
-            msg,
-            api
-              .utility()
-              .string()
-              .replace(api.phrase().getByLanguageAndName(language, "emoji_message_answer"), {
+          const user = await client.subscriber.getById(message.sourceSubscriberId);
+
+          return await client.messaging.sendMessage(
+            message,
+            client
+              .utility
+              .string
+              .replace(client.phrase.getByLanguageAndName(language, 'message_game_answer'), {
                 nickname: user.nickname,
                 id: user.id,
-                answer: msg.body,
+                answer: message.body
               })
           );
         }
@@ -74,47 +83,53 @@ const addPoint = async (msg, api, language) => {
 };
 /**
  *
- * @param {import('wolf.js').MessageObject} msg
- * @param {import('wolf.js').WOLFBot} api
+ * @param {import('wolf.js').WOLF} client
+ * @param {import('wolf.js').Message} message
+ * @param {String} language
+ * @return {Promise<void>}
  */
-const Auto = async (msg, api, language) => {
-  Group.findOrCreate({ id: msg.targetGroupId }, async (err, data) => {
+const Auto = async (client, message, language) => {
+  Group.findOrCreate({ id: message.targetGroupId }, async (err, data) => {
     if (err) {
       throw err;
     }
+
     if (data) {
       if (data.auto) {
-        await api.utility().delay(2000);
-        msg.language = language;
-        await createGame(msg, api);
+        await client.utility.delay(2, 'seconds');
+        Object.assign(message, { language });
+        await createGame(client, message);
       }
     }
   });
 };
 /**
  *
- * @param {import('wolf.js').CommandObject} command
- * @param {import('wolf.js').WOLFBot} api
+ * @param {import('wolf.js').WOLF} client
+ * @param {import('wolf.js').CommandContext} command
+ * @return {Promise<void>}
  */
-const AutoStatus = async (command, api) => {
+const AutoStatus = async (client, command) => {
   Group.findOrCreate({ id: command.targetGroupId }, async (err, data) => {
     if (err) {
       throw err;
     }
+
     if (data) {
       if (data.auto) {
-        return await api
-          .messaging()
+        return await client
+          .messaging
           .sendMessage(
             command,
-            api.phrase().getByLanguageAndName(command.language, "emoji_message_auto")[0]
+            client.phrase.getByLanguageAndName(command.language, 'message_auto')[0]
           );
       }
-      return await api
-        .messaging()
+
+      return await client
+        .messaging
         .sendMessage(
           command,
-          api.phrase().getByLanguageAndName(command.language, "emoji_message_auto")[1]
+          client.phrase.getByLanguageAndName(command.language, 'message_auto')[1]
         );
     }
   });
@@ -122,33 +137,37 @@ const AutoStatus = async (command, api) => {
 
 /**
  *
- * @param {import('wolf.js').command} command
- * @param {import('wolf.js').WOLFBot} api
+ * @param {import('wolf.js').WOLF} client
+ * @param {import('wolf.js').CommandContext} command
+ * @return {Promise<void>}
  */
-const toggleAuto = async (command, api) => {
+const toggleAuto = async (client, command) => {
   Group.findOrCreate({ id: command.targetGroupId }, (err, data) => {
     if (err) {
       throw err;
     }
+
     if (data) {
       Group.findOneAndUpdate({ id: data.id }, { auto: !data.auto }, async (err, data) => {
         if (err) {
           throw err;
         }
+
         if (data) {
           if (!data.auto) {
-            return await api
-              .messaging()
+            return await client
+              .messaging
               .sendMessage(
                 command,
-                api.phrase().getByLanguageAndName(command.language, "emoji_message_auto")[2]
+                client.phrase.getByLanguageAndName(command.language, 'message_auto')[2]
               );
           }
-          return await api
-            .messaging()
+
+          return await client
+            .messaging
             .sendMessage(
               command,
-              api.phrase().getByLanguageAndName(command.language, "emoji_message_auto")[3]
+              client.phrase.getByLanguageAndName(command.language, 'message_auto')[3]
             );
         }
       });
@@ -157,10 +176,11 @@ const toggleAuto = async (command, api) => {
 };
 /**
  *
- * @param {import('wolf.js').CommandObject} command
- * @param {import('wolf.js').WOLFBot} api
+ * @param {import('wolf.js').WOLF} client
+ * @param {import('wolf.js').CommandContext} command
+ * @return {Promise<void>}
  */
-const totalScore = async (command, api) => {
+const totalScore = async (client, command) => {
   Player.aggregate(
     [
       {
@@ -168,41 +188,44 @@ const totalScore = async (command, api) => {
           sortBy: { score: -1 },
           output: {
             GlobalRank: {
-              $documentNumber: {},
-            },
-          },
-        },
+              $documentNumber: {}
+            }
+          }
+        }
       },
-      { $match: { id: { $eq: command.sourceSubscriberId } } },
+      { $match: { id: { $eq: command.sourceSubscriberId } } }
     ],
     async (err, [data]) => {
       if (err) {
         throw err;
       }
+
       if (data) {
-        let user = await api.subscriber().getById(command.sourceSubscriberId);
-        return await api.messaging().sendMessage(
+        const user = await client.subscriber.getById(command.sourceSubscriberId);
+
+        return await client.messaging.sendMessage(
           command,
-          api
-            .utility()
-            .string()
-            .replace(api.phrase().getByCommandAndName(command, "emoji_message_score"), {
+          client
+            .utility
+            .string
+            .replace(client.phrase.getByCommandAndName(command, 'message_score'), {
               rank: data.GlobalRank,
               total: data.score,
               nickname: user.nickname,
-              id: user.id,
+              id: user.id
             })
         );
       } else {
-        let user = await api.subscriber().getById(command.sourceSubscriberId);
-        return await api.messaging().sendMessage(
+        const user = await client.subscriber.getById(command.sourceSubscriberId);
+
+        return await client.messaging.sendMessage(
           command,
-          api
-            .utility()
-            .string()
-            .replace(api.phrase().getByCommandAndName(command, "emoji_message_no_score"), {
+          client
+            .utility
+            .string
+            .replace(client.phrase.getByCommandAndName(command, 'message_no_score'), {
               nickname: user.nickname,
-              id: user.id,
+              id: user.id
             })
         );
       }
@@ -211,10 +234,11 @@ const totalScore = async (command, api) => {
 };
 /**
  *
- * @param {import('wolf.js').CommandObject} command
- * @param {import('wolf.js').WOLFBot} api
+ * @param {import('wolf.js').WOLF} client
+ * @param {import('wolf.js').CommandContext} command
+ * @return {Promise<void>}
  */
-const top10Player = async (command, api) => {
+const top10Player = async (client, command) => {
   Player.find()
     .sort({ score: -1 })
     .limit(10)
@@ -222,28 +246,32 @@ const top10Player = async (command, api) => {
       if (err) {
         throw err;
       }
+
       if (data) {
-        let r = "";
+        let r = '';
+
         for (let index = 0; index < data.length; index++) {
           const user = data[index];
-          const sub = await api.subscriber().getById(user.id);
+          const sub = await client.subscriber.getById(user.id);
+
           if (index === data.length - 1) {
-            r += `${index + 1} ـ ${_formatNickname(api, sub.nickname)} ( ${sub.id} ) ـ  ${
+            r += `${index + 1} ـ ${sub.nickname} ( ${sub.id} ) ـ  ${
               user.score
             }`;
           } else {
-            r += `${index + 1} ـ ${_formatNickname(api, sub.nickname)} ( ${sub.id} ) ـ  ${
+            r += `${index + 1} ـ ${sub.nickname} ( ${sub.id} ) ـ  ${
               user.score
             }\n`;
           }
         }
-        return await api.messaging().sendMessage(
+
+        return await client.messaging.sendMessage(
           command,
-          api
-            .utility()
-            .string()
-            .replace(api.phrase().getByCommandAndName(command, "emoji_message_g_score"), {
-              list: r,
+          client
+            .utility
+            .string
+            .replace(client.phrase.getByCommandAndName(command, 'message_global_score'), {
+              list: r
             })
         );
       }
@@ -251,54 +279,20 @@ const top10Player = async (command, api) => {
 };
 /**
  *
- * @param {*} command
- * @param {*} api
- * @param {*} hint
+ * @param {import('wolf.js').WOLF} client
+ * @param {import('wolf.js').CommandContext} command
+ * @param {string} hint
  */
-const _sendGame = async (command, api, hint) => {
-  return await api.messaging().sendMessage(
+const _sendGame = async (client, command, hint) => {
+  return await client.messaging.sendMessage(
     command,
-    api
-      .utility()
-      .string()
-      .replace(api.phrase().getByLanguageAndName(command.language, "emoji_message_game"), {
-        hint,
+    client
+      .utility
+      .string
+      .replace(client.phrase.getByLanguageAndName(command.language, 'message_game_start'), {
+        hint
       })
   );
 };
-/**
- *
- * @param {import("wolf.js").WOLFBot} api
- * @param {String} nickname
- * @returns
- */
-const _formatNickname = (api, nickname) => {
-  if (Validator.isNullOrWhitespace(nickname)) {
-    return nickname;
-  }
-  //nickname = api.utility().string().trimAds(nickname);
-  nickname = _trimUrl(api, nickname);
-  return nickname;
-};
 
-/**
- *
- * @param {import("wolf.js".WOLFBot)} api
- * @param {String} nickname
- * @returns
- */
-const _trimUrl = (api, nickname) => {
-  if (Validator.isNullOrWhitespace(nickname)) {
-    return nickname;
-  }
-  nickname.split(" ").forEach((s) => {
-    if (!Validator.isNullOrWhitespace(s)) {
-      let url = api.utility().string().getValidUrl(s);
-      if (url) {
-        nickname = nickname.replace(url.url, "");
-      }
-    }
-  });
-  return nickname;
-};
-module.exports = { createGame, addPoint, Auto, toggleAuto, totalScore, AutoStatus, top10Player };
+export { createGame, addPoint, Auto, toggleAuto, totalScore, AutoStatus, top10Player };

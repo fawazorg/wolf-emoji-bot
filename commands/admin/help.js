@@ -1,35 +1,43 @@
-const { Command, Constants } = require("wolf.js");
-const { api } = require("../../bot");
+import { Command, Capability } from 'wolf.js';
+import client from '../../bot.js';
 
-const COMMAND_TRIGGER = `${api.config.keyword}_command_admin_help`;
-const COMMAND_RESPONSE = `${api.config.keyword}_message_help_admin`;
+/**
+ * help admin command
+ * @param {import('wolf.js').WOLF} client
+ * @param {import('wolf.js').CommandContext} command
+ * @returns {Promise<Response<MessageResponse>|Response<Array<MessageResponse>>>}
+ * @constructor
+ */
+const HelpAdmin = async (client, command) => {
+  const err = client.phrase.getByCommandAndName(command, 'error_admin');
 
-HelpAdmin = async (api, command) => {
-  const err = api.phrase().getByCommandAndName(command, "emoji_error_admin");
   if (command.targetGroupId !== parseInt(process.env.ROOM_ADMIN_ID)) {
-    return await api.messaging().sendMessage(command, err[0]);
+    return await client.messaging.sendMessage(command, err[0]);
   }
-  let okay = await api
-    .utility()
-    .group()
-    .member()
+
+  const okay = await client
+    .utility
+    .group
+    .member
     .hasCapability(
       command.targetGroupId,
       command.sourceSubscriberId,
-      Constants.Capability.MOD,
+      Capability.MOD,
+      true,
       true
     );
+
   if (!okay) {
-    return await api.messaging().sendMessage(command, err[1]);
+    return await client.messaging.sendMessage(command, err[1]);
   }
-  await api
-    .messaging()
+  await client
+    .messaging
     .sendMessage(
       command,
-      api.phrase().getByLanguageAndName(command.language, COMMAND_RESPONSE).join("\n")
+      client.phrase.getByLanguageAndName(command.language, 'message_help_admin').join('\n')
     );
 };
 
-module.exports = new Command(COMMAND_TRIGGER, {
-  group: (command) => HelpAdmin(api, command),
+export default new Command('command_admin_help', {
+  group: (command) => HelpAdmin(client, command)
 });

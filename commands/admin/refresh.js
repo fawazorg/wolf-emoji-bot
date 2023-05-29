@@ -1,29 +1,33 @@
-const { Command } = require("wolf.js");
-const { api } = require("../../bot");
-const { refreshUnsetGroup } = require("../../emoji/active");
+import { Command } from 'wolf.js';
+import client from '../../bot.js';
+import { refreshUnsetGroup } from '../../emoji/active.js';
 
-const COMMAND_TRIGGER = `${api.config.keyword}_admin_refresh_command`;
-const COMMAND_RESPONSE = `${api.config.keyword}_admin_refresh_message`;
-const COMMAND_NOT_AUTHORIZES = `${api.config.keyword}_admin_not_authorized_message`;
 /**
- *
- * @param {import('wolf.js').WOLFBot} api
- * @param {import('wolf.js').CommandObject} command
+ * refresh unset group
+ * @param {import('wolf.js').WOLF} client
+ * @param {import('wolf.js').CommandContext} command
+ * @returns {Promise<Response<MessageResponse>|Response<Array<MessageResponse>>>}
+ * @constructor
  */
-const Refresh = async (api, command) => {
-  let okay = command.sourceSubscriberId === api.options.developerId;
+const Refresh = async (client, command) => {
+  const okay = command.sourceSubscriberId === client.config.framework.developer;
+
   if (!okay) {
-    let phrase = api.phrase().getByCommandAndName(command, COMMAND_NOT_AUTHORIZES);
-    return await api.messaging().sendMessage(command, phrase);
+    const phrase = client.phrase.getByCommandAndName(command, 'message_admin_not_authorized');
+
+    return await client.messaging.sendMessage(command, phrase);
   }
-  let names = await refreshUnsetGroup(api);
-  let phrase = api.phrase().getByCommandAndName(command, COMMAND_RESPONSE);
-  let content = api
-    .utility()
-    .string()
-    .replace(phrase, { list: names.join(" ") });
-  await api.messaging().sendMessage(command, content);
+
+  const names = await refreshUnsetGroup(client);
+  const phrase = client.phrase.getByCommandAndName(command, 'message_admin_refresh');
+  const content = client
+    .utility
+    .string
+    .replace(phrase, { list: names.join(' ') });
+
+  await client.messaging.sendMessage(command, content);
 };
-module.exports = new Command(COMMAND_TRIGGER, {
-  group: (command) => Refresh(api, command),
+
+export default new Command('command_admin_refresh', {
+  group: (command) => Refresh(client, command)
 });

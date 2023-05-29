@@ -1,72 +1,88 @@
-const { getInactiveGroups, deleteGroup } = require("../active");
-const { ignoreGroups, AdminGroup } = require("../data");
+import { getInactiveGroups, deleteGroup } from '../active.js';
+import { ignoreGroups, AdminGroup } from '../data.js';
+
 /**
  *
- * @param {import ("wolf.js").WOLFBot} api
+ * @param {import('wolf.js').WOLF} client
  * @param {Number} days
+ * @return {Promise<void>}
  */
-const leaveInactiveGroups = async (api, days) => {
-  let inactiveGroups = await getInactiveGroups(days);
+const leaveInactiveGroups = async (client, days) => {
+  const inactiveGroups = await getInactiveGroups(days);
+
   if (inactiveGroups.length <= 0) {
-    return;
+    return Promise.resolve();
   }
-  let inGroups = await api.group().list();
+
+  const inGroups = await client.group.list();
+
   if (inGroups.length <= 0) {
-    return;
+    return Promise.resolve();
   }
-  let toExitGroups = [];
+
+  const toExitGroups = [];
+
   inGroups.forEach((group) => {
-    if (!ignoreGroups.includes(group.id) && inArray(inactiveGroups, "id", group.id)) {
+    if (!ignoreGroups.includes(group.id) && inArray(inactiveGroups, 'id', group.id)) {
       toExitGroups.push(group);
     }
   });
+
   if (toExitGroups.length > 0) {
-    let groupsNames = await toExitGroups.reduce(async (pv, group) => {
-      let names = await pv;
-      await sendLeaveMessage(api, group);
-      await api.group().leaveById(group.id);
+    const groupsNames = await toExitGroups.reduce(async (pv, group) => {
+      const names = await pv;
+
+      await sendLeaveMessage(client, group);
+      await client.group.leaveById(group.id);
       await deleteGroup(group.id);
-      await api.utility().delay(2000);
+      await client.utility.delay(2, 'seconds');
+
       return [...names, `[${group.name}]`];
     }, []);
-    await sendLogMessage(api, groupsNames);
+
+    return await sendLogMessage(client, groupsNames);
   }
 };
 /**
  *
- * @param {import ("wolf.js").WOLFBot} api
- * @param {import ("wolf.js").GroupObject} group
+ * @param {import('wolf.js').WOLF} client
+ * @param {import('wolf.js').Group} group
+ * @return {Promise<Response<MessageResponse> | Response<Array<MessageResponse>>>}
  */
-const sendLeaveMessage = async (api, group) => {
-  let phrase = api.phrase().getByLanguageAndName("ar", "emoji_auto_leave_message");
-  await api.messaging().sendGroupMessage(group.id, phrase);
+const sendLeaveMessage = async (client, group) => {
+  const phrase = client.phrase.getByLanguageAndName('ar', 'message_auto_leave');
+
+  return await client.messaging.sendGroupMessage(group.id, phrase);
 };
 /**
  *
- * @param {import ("wolf.js").WOLFBot} api
+ * @param {import('wolf.js').WOLF} client
  * @param {Array} names
+ * @return {Promise<Response<MessageResponse> | Response<Array<MessageResponse>>>}
  */
-const sendLogMessage = async (api, names) => {
-  let phrase = api.phrase().getByLanguageAndName("ar", "emoji_auto_leave_log");
-  let groupsCount = await api.group().list();
-  let content = api
-    .utility()
-    .string()
+const sendLogMessage = async (client, names) => {
+  const phrase = client.phrase.getByLanguageAndName('ar', 'message_auto_leave_log');
+  const groupsCount = await client.group.list();
+  const content = client
+    .utility
+    .string
     .replace(phrase, {
       count: groupsCount.length,
       inactiveCount: names.length,
-      groupsName: names.join("\n"),
+      groupsName: names.join('\n')
     });
-  await api.messaging().sendGroupMessage(AdminGroup, content);
+
+  return await client.messaging.sendGroupMessage(AdminGroup, content);
 };
 /**
  *
  * @param {Array} array
  * @param {String} key
  * @param {*} value
- * @returns
+ * @returns{boolean}
  */
 const inArray = (array, key, value) => {
-  return array.filter((item) => item[key] === value).length > 0 ? true : false;
+  return array.filter((item) => item[key] === value).length > 0;
 };
-module.exports = { leaveInactiveGroups };
+
+export { leaveInactiveGroups };

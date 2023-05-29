@@ -1,14 +1,15 @@
-const Default = require("./default");
-const Next = require("./next");
-const Join = require("./join");
-const Help = require("./help");
-const Score = require("./score");
-const GScore = require("./gScore");
-const Auto = require("./auto");
-const AutoStatus = require("./status");
-const Admin = require("./admin/index");
-const Commands = [Next, Join, Auto, AutoStatus, GScore, Score, Help, Admin];
+import Default from './default.js';
+import Next from './next.js';
+import Join from './join.js';
+import Help from './help.js';
+import Score from './score.js';
+import GScore from './GlobalScore.js';
+import Auto from './auto.js';
+import Status from './status.js';
+import Admin from './admin/index.js';
+
+const Commands = [Next, Join, Auto, Status, GScore, Score, Help, Admin];
 
 Default.children = Commands;
 
-module.exports = Default;
+export default Default;

@@ -1,20 +1,23 @@
-const { group } = require("./cache");
-const { addPoint, Auto } = require("./index");
+import group from './cache.js';
+import { addPoint, Auto } from './index.js';
+
 /**
- * @param {import('wolf.js').MessageObject} msg
- * @param {import('wolf.js').WOLFBot} api
+ *
+ * @param {import('wolf.js').WOLF} client
+ * @param {import('wolf.js').Message} msg
+ * @return {Promise<void>}
  */
-const messageHandler = async (msg, api) => {
-  if (msg.isCommand || !msg.isGroup || msg.type !== "text/plain" || !group.has(msg.targetGroupId)) {
+export default async (client, msg) => {
+  if (msg.isCommand || !msg.isGroup || msg.type !== 'text/plain' || !group.has(msg.targetGroupId)) {
     return;
   }
-  let game = group.get(msg.targetGroupId);
+
+  const game = group.get(msg.targetGroupId);
+
   if (game) {
     if (msg.body.toLowerCase() === game.answer.toLowerCase()) {
-      await addPoint(msg, api, game.language);
-      await Auto(msg, api, game.language);
+      await addPoint(client, msg, game.language);
+      await Auto(client, msg, game.language);
     }
   }
 };
-
-module.exports = messageHandler;

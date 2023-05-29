@@ -1,3 +1,4 @@
-const { api } = require("./bot");
-const commands = require("./commands");
-api.commandHandler().register([commands]);
+import client from './bot.js';
+import commands from './commands/index.js';
+
+client.commandHandler.register([commands]);

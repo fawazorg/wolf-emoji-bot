@@ -1,18 +1,18 @@
-const { Command } = require("wolf.js");
-const { api } = require("../bot");
+import { Command } from 'wolf.js';
+import client from '../bot.js';
 
-const COMMAND_TRIGGER = `${api.config.keyword}_command_help`;
-const COMMAND_RESPONSE = `${api.config.keyword}_message_help`;
-
-Help = async (api, command) => {
-  await api
-    .messaging()
-    .sendMessage(
-      command,
-      api.phrase().getByLanguageAndName(command.language, COMMAND_RESPONSE).join("\n")
-    );
+/**
+ * help command
+ * @param {import('wolf.js').WOLF} client
+ * @param {import('wolf.js').CommandContext} command
+ * @returns {Promise<Response<MessageResponse>>}
+ */
+const Help = async (client, command) => {
+  return await command.reply(
+    client.phrase.getByCommandAndName(command, 'message_help').join('\n')
+  );
 };
 
-module.exports = new Command(COMMAND_TRIGGER, {
-  both: (command) => Help(api, command),
+export default new Command('command_help', {
+  both: (command) => Help(client, command)
 });
