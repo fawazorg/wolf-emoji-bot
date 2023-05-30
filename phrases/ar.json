@@ -97,8 +97,16 @@
     "value": "/me كوّن الكلمة الصحيحة باستخدام الايقونات\n\nالتلميح : {hint}"
   },
   {
+    "name": "message_game_timeout",
+    "value": "انتهى الوقت!\nلم يستطع أحد حل هذه اللعبة خلال الوقت المحدد. الأجابة كانت \" {word} \"."
+  },
+  {
+    "name": "message_game_in_progress",
+    "value": "/me توجد لعبة حالية، خمن الايقونات التالية:\n\nالتلميح: {hint}"
+  },
+  {
     "name": "message_game_answer",
-    "value": "أحسنت!\nالجواب الصحيح هو \" {answer} \" واستغرق حل اللعبة 10 ثواني\n{nickname} ({id} )"
+    "value": "أحسنت!\nالجواب الصحيح هو \" {answer} \" واستغرق حل اللعبة {timeTaken}\n{nickname} ({id} )"
   },
   {
     "name": "message_score",
@@ -195,5 +203,33 @@
   {
     "name": "message_admin_refresh",
     "value": "/me تم تحديث الغرف التالية :\n{list}"
+  },
+  {
+    "name": "emoji_time_type_seconds",
+    "value": "ث"
+  },
+  {
+    "name": "emoji_time_type_minutes",
+    "value": "د"
+  },
+  {
+    "name": "emoji_time_type_hours",
+    "value": "س"
+  },
+  {
+    "name": "emoji_time_type_days",
+    "value": "س"
+  },
+  {
+    "name": "emoji_time_type_weeks",
+    "value": "أ"
+  },
+  {
+    "name": "emoji_time_type_months",
+    "value": "شهر"
+  },
+  {
+    "name": "emoji_time_type_years",
+    "value": "سنة"
   }
 ]

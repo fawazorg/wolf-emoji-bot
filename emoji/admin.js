@@ -1,7 +1,7 @@
 import { Validator } from 'wolf.js';
+import { cache } from '../bot.js';
 import Game from './model/game.js';
 import { TTE } from './utility.js';
-import cache from './cache.js';
 
 /**
  * add word to database
@@ -112,16 +112,16 @@ const Solve = async (client, command) => {
     return await client.messaging.sendMessage(command, getError(client, command)[9]);
   }
 
-  if (cache.has(parseInt(client.utility.number.toEnglishNumbers(command.argument)))) {
-    const g = cache.get(parseInt(client.utility.number.toEnglishNumbers(command.argument)));
+  const cached = await cache.getGame(client.utility.number.toEnglishNumbers(command.targetGroupId));
 
+  if (cached) {
     return await client.messaging.sendMessage(
       command,
       client
         .utility
         .string
         .replace(client.phrase.getByCommandAndName(command, 'message_admin_solve'), {
-          answer: g.answer
+          answer: cached.answer
         })
     );
   }

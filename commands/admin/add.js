@@ -1,5 +1,5 @@
 import { Capability, Command } from 'wolf.js';
-import client from '../../bot.js';
+import { client } from '../../bot.js';
 import { addAnswer } from '../../emoji/admin.js';
 
 /**

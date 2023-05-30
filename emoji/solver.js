@@ -1,23 +1,43 @@
-import group from './cache.js';
 import { addPoint, Auto } from './index.js';
 
 /**
  *
  * @param {import('wolf.js').WOLF} client
- * @param {import('wolf.js').Message} msg
- * @return {Promise<void>}
+ * @param {import('wolf.js').Message} message
+ * @param game
+ * @param {number} timestamp
+ * @param {import('./cache.js').Cache} cache
+ * @returns {Promise<void>}
  */
-export default async (client, msg) => {
-  if (msg.isCommand || !msg.isGroup || msg.type !== 'text/plain' || !group.has(msg.targetGroupId)) {
-    return;
+export default async (client, message, game, timestamp, cache) => {
+  const fixedUserString = client.utility.string.sanitise(message.body);
+  const fixedAnswer = client.utility.string.sanitise(game.answer);
+
+  if (!client.utility.string.isEqual(fixedUserString, fixedAnswer)) {
+    return Promise.resolve();
   }
 
-  const game = group.get(msg.targetGroupId);
+  await Promise.all(
+    [
+      cache.deleteGame(message.targetGroupId),
+      client.utility.timer.cancel(`gameTimeout:${message.targetGroupId}`)
+    ]
+  );
 
-  if (game) {
-    if (msg.body.toLowerCase() === game.answer.toLowerCase()) {
-      await addPoint(client, msg, game.language);
-      await Auto(client, msg, game.language);
-    }
-  }
+  const timeTaken = timestamp - game.startAt;
+
+  await message.reply(
+    client.utility.string.replace(
+      client.phrase.getByLanguageAndName(game.language, 'message_game_answer'),
+      {
+        nickname: (await message.subscriber()).nickname,
+        id: message.sourceSubscriberId,
+        answer: game.answer,
+        timeTaken: client.utility.toReadableTime(game.language, timeTaken)
+      }
+    )
+  );
+
+  await addPoint(client, message, game.language);
+  await Auto(client, message, game.language);
 };

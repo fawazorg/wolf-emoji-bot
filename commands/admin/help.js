@@ -1,5 +1,5 @@
 import { Command, Capability } from 'wolf.js';
-import client from '../../bot.js';
+import { client } from '../../bot.js';
 
 /**
  * help admin command

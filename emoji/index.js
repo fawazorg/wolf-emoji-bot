@@ -1,4 +1,4 @@
-import cache from './cache.js';
+import { cache } from '../bot.js';
 import Player from './model/player.js';
 import Game from './model/game.js';
 import Group from './model/group.js';
@@ -13,73 +13,73 @@ import { setLastActive } from './active.js';
  * @return {Promise<any>}
  */
 const createGame = async (client, commandOrMessage, next = false) => {
-  if (!next) {
-    if (cache.has(commandOrMessage.targetGroupId)) {
-      const g = cache.get(commandOrMessage.targetGroupId);
+  const unlock = await cache.lock(commandOrMessage.targetGroupId);
 
-      return await _sendGame(client, commandOrMessage, g.hint);
+  await setLastActive(commandOrMessage.targetGroupId);
+
+  try {
+    const cached = await cache.getGame(commandOrMessage.targetGroupId);
+
+    if (cached && !next) {
+      return await client.messaging.sendMessage(
+        commandOrMessage,
+        client.utility.string.replace(
+          client.phrase.getByLanguageAndName(commandOrMessage.language, 'message_game_in_progress'),
+          {
+            hint: cached.hint
+          }
+        )
+      );
     }
+
+    if (next) {
+      await Promise.all(
+        [
+          cache.deleteGame(commandOrMessage.targetGroupId),
+          client.utility.timer.cancel(`gameTimeout:${commandOrMessage.targetGroupId}`)
+        ]
+      );
+    }
+
+    let game = await Game.random();
+
+    game = game.toJSON();
+
+    const hint = TTE(game.answer);
+
+    Object.assign(game, { startAt: Date.now(), language: commandOrMessage.language, hint });
+
+    await Promise.all(
+      [
+        cache.setGame(commandOrMessage.targetGroupId, game),
+        client.utility.timer.add(
+          `gameTimeout:${commandOrMessage.targetGroupId}`,
+          'gameTimeout',
+          {
+            targetGroupId: commandOrMessage.targetGroupId
+          },
+          30000
+        ),
+        _sendGame(client, commandOrMessage, hint)
+      ]
+    );
+  } catch (e) {
+    return client.log.error(`error starting game [targetGroupId:${commandOrMessage.targetGroupId}, error:${JSON.stringify(e)}]`);
+  } finally {
+    unlock();
   }
-
-  if (cache.has(commandOrMessage.targetGroupId)) {
-    cache.delete(commandOrMessage.targetGroupId);
-  }
-  Game.aggregate([{ $sample: { size: 1 } }], async (err, [data]) => {
-    if (err) {
-      throw err;
-    }
-
-    if (data) {
-      const hint = TTE(data.answer);
-
-      cache.set(commandOrMessage.targetGroupId, {
-        hint,
-        answer: data.answer,
-        language: commandOrMessage.language
-      });
-      await setLastActive(commandOrMessage.targetGroupId);
-
-      return await _sendGame(client, commandOrMessage, hint);
-    }
-  });
 };
 /**
  * @param {import('wolf.js').WOLF} client
  * @param {import('wolf.js').Message} message
- * @param {String} language
  * @return {Promise<void>}
  */
-const addPoint = async (client, message, language) => {
-  cache.delete(message.targetGroupId);
-  Player.findOrCreate({ id: message.sourceSubscriberId }, async (err, data) => {
-    if (err) {
-      throw err;
-    }
-
-    if (data) {
-      Player.findByIdAndUpdate(data._id, { $inc: { score: 1 } }, async (err, data) => {
-        if (err) {
-          throw err;
-        }
-
-        if (data) {
-          const user = await client.subscriber.getById(message.sourceSubscriberId);
-
-          return await client.messaging.sendMessage(
-            message,
-            client
-              .utility
-              .string
-              .replace(client.phrase.getByLanguageAndName(language, 'message_game_answer'), {
-                nickname: user.nickname,
-                id: user.id,
-                answer: message.body
-              })
-          );
-        }
-      });
-    }
-  });
+const addPoint = async (client, message) => {
+  try {
+    await Player.findOneAndUpdate({ id: message.sourceSubscriberId }, { $inc: { score: 1 } }, { upsert: true });
+  } catch (error) {
+    console.log(error);
+  }
 };
 /**
  *

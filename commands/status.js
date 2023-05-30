@@ -1,5 +1,5 @@
 import { Command } from 'wolf.js';
-import client from '../bot.js';
+import { client } from '../bot.js';
 import { AutoStatus } from '../emoji/index.js';
 
 /**
