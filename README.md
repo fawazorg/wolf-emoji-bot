@@ -13,7 +13,7 @@ Emoji game for wolflive.
 ## Commands:
 
 ```bash
-!emoji help
+!تكوين مساعدة
 ```
 
 ## Thanks :
