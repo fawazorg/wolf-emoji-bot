@@ -14,11 +14,12 @@ const main = async () => {
     await client.commandRegister();
 
     clients.set(account.split(':')[0], client);
+    await new Promise(resolve => setTimeout(resolve, 500));
   }, Promise.resolve());
 
   return Promise.resolve();
 };
 
-main().then().catch();
+main().then().catch(e => console.log(e));
 
 export default clients;
