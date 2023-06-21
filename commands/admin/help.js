@@ -1,5 +1,4 @@
-import { Command, Capability } from 'wolf.js';
-import { client } from '../../bot.js';
+import { Capability } from 'wolf.js';
 
 /**
  * help admin command
@@ -8,7 +7,7 @@ import { client } from '../../bot.js';
  * @returns {Promise<Response<MessageResponse>|Response<Array<MessageResponse>>>}
  * @constructor
  */
-const HelpAdmin = async (client, command) => {
+export default async (client, command) => {
   const err = client.phrase.getByCommandAndName(command, 'error_admin');
 
   if (command.targetGroupId !== parseInt(process.env.ROOM_ADMIN_ID)) {
@@ -24,7 +23,7 @@ const HelpAdmin = async (client, command) => {
       command.sourceSubscriberId,
       Capability.MOD,
       true,
-      true
+      false
     );
 
   if (!okay) {
@@ -37,7 +36,3 @@ const HelpAdmin = async (client, command) => {
       client.phrase.getByLanguageAndName(command.language, 'message_help_admin').join('\n')
     );
 };
-
-export default new Command('command_admin_help', {
-  group: (command) => HelpAdmin(client, command)
-});

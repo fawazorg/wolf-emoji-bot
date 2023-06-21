@@ -1,5 +1,3 @@
-import { Command } from 'wolf.js';
-import { client } from '../../bot.js';
 import { admins } from '../../emoji/data.js';
 
 /**
@@ -8,7 +6,7 @@ import { admins } from '../../emoji/data.js';
  * @param {import('wolf.js').CommandContext} command
  * @returns {Promise<Response<MessageResponse>|Response<Array<MessageResponse>>>}
  */
-const AddContact = async (client, command) => {
+export default async (client, command) => {
   const isDeveloper = command.sourceSubscriberId === client.config.framework.developer;
   const isAdmin = admins.includes(command.sourceSubscriberId);
   const okay = isDeveloper || isAdmin;
@@ -24,7 +22,3 @@ const AddContact = async (client, command) => {
 
   return await client.messaging.sendMessage(command, phrase);
 };
-
-export default new Command('command_admin_contact_add', {
-  group: (command) => AddContact(client, command)
-});

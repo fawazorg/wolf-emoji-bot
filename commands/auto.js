@@ -1,5 +1,3 @@
-import { Command } from 'wolf.js';
-import { client } from '../bot.js';
 import { toggleAuto } from '../emoji/index.js';
 
 /**
@@ -8,10 +6,6 @@ import { toggleAuto } from '../emoji/index.js';
  * @param {import('wolf.js').CommandContext} command
  * @returns {Promise<void>}
  */
-const Auto = async (client, command) => {
+export default async (client, command) => {
   await toggleAuto(client, command);
 };
-
-export default new Command('command_auto', {
-  group: (command) => Auto(client, command)
-});

@@ -1,14 +1,13 @@
 import Redis from 'ioredis';
 import redisLock from 'redis-lock';
 import { promisify } from 'util';
-import { client } from '../bot.js';
 
 const KEY_PREFIX = 'emoji.';
 const GAME_PREFIX = 'game:';
 
 class Cache {
   constructor () {
-    const clonedConfig = JSON.parse(JSON.stringify(client.config));
+    const clonedConfig = { };
 
     clonedConfig.retryStrategy = (times) => Math.min(times * 100, 3000);
 
@@ -99,4 +98,4 @@ class Cache {
   }
 }
 
-export default Cache;
+export default new Cache();

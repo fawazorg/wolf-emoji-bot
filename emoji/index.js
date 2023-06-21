@@ -1,4 +1,4 @@
-import { cache } from '../bot.js';
+import cache from './cache.js';
 import Player from './model/player.js';
 import Game from './model/game.js';
 import Group from './model/group.js';

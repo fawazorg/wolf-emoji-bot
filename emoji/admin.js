@@ -1,5 +1,5 @@
 import { Validator } from 'wolf.js';
-import { cache } from '../bot.js';
+import cache from './cache.js';
 import Game from './model/game.js';
 import { TTE } from './utility.js';
 
