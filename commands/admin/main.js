@@ -1,5 +1,4 @@
-import { Command, Capability } from 'wolf.js';
-import { client } from '../../bot.js';
+import { Capability } from 'wolf.js';
 
 /**
  * default admin command
@@ -7,7 +6,7 @@ import { client } from '../../bot.js';
  * @param {import('wolf.js').CommandContext} command
  * @returns {Promise<Response<MessageResponse>|Response<Array<MessageResponse>>>}
  */
-const DefaultAdmin = async (client, command) => {
+export default async (client, command) => {
   const err = client.phrase.getByCommandAndName(command, 'error_admin');
 
   if (command.targetGroupId !== parseInt(process.env.ROOM_ADMIN_ID)) {
@@ -23,7 +22,7 @@ const DefaultAdmin = async (client, command) => {
       command.sourceSubscriberId,
       Capability.MOD,
       true,
-      true
+      false
     );
 
   if (!okay) {
@@ -36,7 +35,3 @@ const DefaultAdmin = async (client, command) => {
       client.phrase.getByLanguageAndName(command.language, 'message_help_admin').join('\n')
     );
 };
-
-export default new Command('command_admin_default', {
-  group: (command) => DefaultAdmin(client, command)
-});

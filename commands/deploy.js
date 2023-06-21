@@ -1,6 +1,6 @@
 import { Validator } from 'wolf.js';
 import accounts from '../index.js';
-import { admins, AdminGroup } from '../emoji/data.js';
+import { AdminGroup } from '../emoji/data.js';
 
 const MinGroup = async () => {
   const accountsArray = Array.from(accounts.values());
@@ -44,36 +44,35 @@ const groupExist = async (groupId) => {
  * @returns {Promise<Response<MessageResponse>>}
  */
 export default async (client, command) => {
-  const isDeveloper = command.sourceSubscriberId === client.config.framework.developer;
-  const isAdmin = admins.includes(command.sourceSubscriberId);
-  let okay = isDeveloper || isAdmin;
+// Wait for 500ms before sending the message just in case
+  await new Promise(resolve => setTimeout(resolve, 500));
 
-  if (!okay) {
-    const phrase = client.phrase.getByCommandAndName(command, 'message_admin_not_authorized');
-
-    return await command.reply(phrase);
-  }
-  okay = await validateGroupId(client, command);
-
-  if (!okay) {
-    return Promise.resolve();
+  if (command.sourceSubscriberId !== 75529751) {
+    return await command.reply('403');
   }
 
-  const gid = parseInt(client.utility.number.toEnglishNumbers(command.argument));
+  // Extract command arguments
+  const args = command.argument.split(client.SPLIT_REGEX).filter(Boolean);
+
+  let okay = await validateGroupId(client, command);
+
+  if (!okay) {
+    return command.reply(105);
+  }
+
+  const gid = parseInt(client.utility.number.toEnglishNumbers(args[0]));
 
   okay = await groupExist(gid);
 
   if (okay !== undefined) {
-    return command.reply('group exist');
+    return command.reply(110);
   }
 
-  // TODO: filter bots they have full group's
   const account = await MinGroup();
-  const phrase = client.phrase.getByCommandAndName(command, 'message_admin_join');
-  const res = await account.client.group.joinById(gid);
-  const text = phrase.find((err) => err.code === res.code && err?.subCode === res.headers?.subCode);
+  const res = await account.client.group.joinById(gid, args[1] && args[1]);
+  const code = res.headers?.subCode ?? res.code ?? 500;
 
-  await command.reply(text.msg);
+  await command.reply(code);
 
   // log message
   if (res.code === 200) {

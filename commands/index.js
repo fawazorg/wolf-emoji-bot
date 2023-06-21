@@ -1,15 +1,12 @@
-import Default from './default.js';
+import Main from './main.js';
+import Help from './help.js';
 import Next from './next.js';
 import Join from './join.js';
-import Help from './help.js';
+import Deploy from './deploy.js';
 import Score from './score.js';
-import GScore from './GlobalScore.js';
+import GlobalScore from './GlobalScore.js';
 import Auto from './auto.js';
 import Status from './status.js';
-import Admin from './admin/index.js';
+import * as Admin from './admin/index.js';
 
-const Commands = [Next, Join, Auto, Status, GScore, Score, Help, Admin];
-
-Default.children = Commands;
-
-export default Default;
+export { Main, Next, Join, Help, Score, GlobalScore, Auto, Status, Deploy, Admin };

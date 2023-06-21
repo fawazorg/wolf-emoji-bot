@@ -1,5 +1,4 @@
-import { Command, Capability } from 'wolf.js';
-import { client } from '../../bot.js';
+import { Capability } from 'wolf.js';
 import { Solve } from '../../emoji/admin.js';
 
 /**
@@ -9,7 +8,7 @@ import { Solve } from '../../emoji/admin.js';
  * @returns {Promise<Response<MessageResponse>|Response<Array<MessageResponse>>|*>}
  * @constructor
  */
-const AdminSolve = async (client, command) => {
+export default async (client, command) => {
   const err = client.phrase.getByCommandAndName(command, 'error_admin');
 
   if (command.targetGroupId !== parseInt(process.env.ROOM_ADMIN_ID)) {
@@ -34,7 +33,3 @@ const AdminSolve = async (client, command) => {
 
   return await Solve(client, command);
 };
-
-export default new Command('command_admin_solve', {
-  group: (command) => AdminSolve(client, command)
-});

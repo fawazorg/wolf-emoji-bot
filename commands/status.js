@@ -1,5 +1,3 @@
-import { Command } from 'wolf.js';
-import { client } from '../bot.js';
 import { AutoStatus } from '../emoji/index.js';
 
 /**
@@ -8,10 +6,6 @@ import { AutoStatus } from '../emoji/index.js';
  * @param {import('wolf.js').CommandContext} command
  * @returns {Promise<void>}
  */
-const Status = async (client, command) => {
+export default async (client, command) => {
   return await AutoStatus(client, command);
 };
-
-export default new Command('command_status', {
-  group: (command) => Status(client, command)
-});

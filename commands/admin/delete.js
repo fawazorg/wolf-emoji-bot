@@ -1,5 +1,4 @@
-import { Command, Capability } from 'wolf.js';
-import { client } from '../../bot.js';
+import { Capability } from 'wolf.js';
 import { delAnswer } from '../../emoji/admin.js';
 
 /**
@@ -8,7 +7,7 @@ import { delAnswer } from '../../emoji/admin.js';
  * @param {import('wolf.js').CommandContext} command
  * @returns {Promise<Response<MessageResponse>|Response<Array<MessageResponse>>|*|undefined>}
  */
-const DeleteAdmin = async (client, command) => {
+export default async (client, command) => {
   const err = client.phrase.getByCommandAndName(command, 'error_admin');
 
   if (command.targetGroupId !== parseInt(process.env.ROOM_ADMIN_ID)) {
@@ -24,7 +23,7 @@ const DeleteAdmin = async (client, command) => {
       command.sourceSubscriberId,
       Capability.MOD,
       true,
-      true
+      false
     );
 
   if (!okay) {
@@ -33,7 +32,3 @@ const DeleteAdmin = async (client, command) => {
 
   return await delAnswer(client, command);
 };
-
-export default new Command('command_admin_delete', {
-  group: (command) => DeleteAdmin(client, command)
-});

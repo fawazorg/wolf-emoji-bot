@@ -1,5 +1,4 @@
-import { Capability, Command } from 'wolf.js';
-import { client } from '../../bot.js';
+import { Capability } from 'wolf.js';
 import { addAnswer } from '../../emoji/admin.js';
 
 /**
@@ -8,7 +7,7 @@ import { addAnswer } from '../../emoji/admin.js';
  * @param {import('wolf.js').CommandContext} command
  * @returns {Promise<Response<MessageResponse>|Response<Array<MessageResponse>>|*|undefined>}
  */
-const AddAdmin = async (client, command) => {
+export default async (client, command) => {
   const err = client.phrase.getByCommandAndName(command, 'error_admin');
 
   if (command.targetGroupId !== parseInt(process.env.ROOM_ADMIN_ID)) {
@@ -33,7 +32,3 @@ const AddAdmin = async (client, command) => {
 
   return await addAnswer(client, command);
 };
-
-export default new Command('command_admin_add', {
-  group: (command) => AddAdmin(client, command)
-});

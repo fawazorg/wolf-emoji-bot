@@ -1,5 +1,3 @@
-import { Command } from 'wolf.js';
-import { client } from '../../bot.js';
 import { refreshUnsetGroup } from '../../emoji/active.js';
 
 /**
@@ -9,7 +7,7 @@ import { refreshUnsetGroup } from '../../emoji/active.js';
  * @returns {Promise<Response<MessageResponse>|Response<Array<MessageResponse>>>}
  * @constructor
  */
-const Refresh = async (client, command) => {
+export default async (client, command) => {
   const okay = command.sourceSubscriberId === client.config.framework.developer;
 
   if (!okay) {
@@ -27,7 +25,3 @@ const Refresh = async (client, command) => {
 
   await client.messaging.sendMessage(command, content);
 };
-
-export default new Command('command_admin_refresh', {
-  group: (command) => Refresh(client, command)
-});

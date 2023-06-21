@@ -1,5 +1,3 @@
-import { Command } from 'wolf.js';
-import { client } from '../../bot.js';
 import { admins } from '../../emoji/data.js';
 
 /**
@@ -8,7 +6,7 @@ import { admins } from '../../emoji/data.js';
  * @param {import('wolf.js').CommandContext} command
  * @returns {Promise<Response<MessageResponse>|Response<Array<MessageResponse>>>}
  */
-const Count = async (client, command) => {
+export default async (client, command) => {
   const isDeveloper = command.sourceSubscriberId === client.config.framework.developer;
   const isAdmin = admins.includes(command.sourceSubscriberId);
   const okay = isDeveloper || isAdmin;
@@ -25,7 +23,3 @@ const Count = async (client, command) => {
 
   return await client.messaging.sendMessage(command, content);
 };
-
-export default new Command('command_admin_count', {
-  group: (command) => Count(client, command)
-});

@@ -1,0 +1,10 @@
+[
+  {
+    "name": "command_default",
+    "value": "!formation"
+  },
+  {
+    "name": "command_deploy",
+    "value": "deploy"
+  }
+]
