@@ -4,10 +4,18 @@ import { AdminGroup } from '../emoji/data.js';
 
 const MinGroup = async () => {
   const accountsArray = Array.from(accounts.values());
+  const min = Infinity;
+  let minAccount = null;
 
-  return accountsArray.reduce(async function (p, v) {
-    return ((await p.groups()).length < (await v.groups()).length ? p : v);
-  });
+  for (const account of accountsArray) {
+    const groupCount = (await account.groups()).length;
+
+    if (groupCount < min) {
+      minAccount = account;
+    }
+  }
+
+  return minAccount;
 };
 /**
  * validate groupID
