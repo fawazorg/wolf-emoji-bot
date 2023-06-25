@@ -4,7 +4,7 @@ import { AdminGroup } from '../emoji/data.js';
 
 const MinGroup = async () => {
   const accountsArray = Array.from(accounts.values());
-  const min = Infinity;
+  let min = Infinity;
   let minAccount = null;
 
   for (const account of accountsArray) {
@@ -12,6 +12,7 @@ const MinGroup = async () => {
 
     if (groupCount < min) {
       minAccount = account;
+      min = groupCount;
     }
   }
 

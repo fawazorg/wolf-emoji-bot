@@ -4,7 +4,7 @@ import { admins, AdminGroup } from '../emoji/data.js';
 
 const MinGroup = async () => {
   const accountsArray = Array.from(accounts.values());
-  const min = Infinity;
+  let min = Infinity;
   let minAccount = null;
 
   for (const account of accountsArray) {
@@ -12,6 +12,7 @@ const MinGroup = async () => {
 
     if (groupCount < min) {
       minAccount = account;
+      min = groupCount;
     }
   }
 
@@ -71,14 +72,13 @@ export default async (client, command) => {
 
   okay = await groupExist(gid);
 
+  const phrase = client.phrase.getByCommandAndName(command, 'message_admin_join');
+
   if (okay !== undefined) {
-    return command.reply('group exist');
+    return command.reply(phrase.find((err) => err.code === 403 && err?.subCode === 110).msg);
   }
 
-  // TODO: filter bots they have full group's
-
   const account = await MinGroup();
-  const phrase = client.phrase.getByCommandAndName(command, 'message_admin_join');
   const res = await account.client.group.joinById(gid);
   const text = phrase.find((err) => err.code === res.code && err?.subCode === res.headers?.subCode);
 
