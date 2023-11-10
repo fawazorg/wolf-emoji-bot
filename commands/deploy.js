@@ -21,16 +21,16 @@ const MinGroup = async () => {
 /**
  * validate groupID
  * @param {import('wolf.js').WOLF} client
- * @param {import('wolf.js').CommandContext} command
+ * @param {number} gid
  * @returns {boolean}
  */
-const validateGroupId = async (client, command) => {
-  const groupId = client.utility.number.toEnglishNumbers(command.argument);
+const validateGroupId = async (client, gid) => {
+  const groupId = client.utility.number.toEnglishNumbers(gid);
 
   if (Validator.isValidNumber(groupId, false)) {
     return true;
   } else {
-    await command.reply(client.phrase.getByCommandAndName(command, 'error_admin')[9]);
+    //await command.reply(client.phrase.getByCommandAndName(command, 'error_admin')[9]);
 
     return false;
   }
@@ -63,7 +63,7 @@ export default async (client, command) => {
   // Extract command arguments
   const args = command.argument.split(client.SPLIT_REGEX).filter(Boolean);
 
-  let okay = await validateGroupId(client, command);
+  let okay = await validateGroupId(client, args[0]);
 
   if (!okay) {
     return command.reply(105);
